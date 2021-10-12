@@ -65,7 +65,6 @@ glEnd();
 
 void _triangulos3D::draw_solido(float r, float g, float b)
 {
-
   int i;
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glColor3f(r, g, b);
@@ -288,9 +287,17 @@ for (j=0;j<num;j++)
   }
   
 
+  vertices.resize(vertices.size()+1);
+  caras.resize(caras.size()+1);
+  vertices[vertices.size()-1].x=0;
+  vertices[vertices.size()-1].y=perfil[0].y;
+  vertices[vertices.size()-1].z=0;
  // tapa inferior
 if (fabs(perfil[0].x)>0.0) //Evitar que haya puntos sobre el eje y
   {
+    caras[c]._0=0;
+    caras[c]._1=vertices.size()-1;
+    caras[c]._2=num_aux;
   }
  
  // tapa superior
