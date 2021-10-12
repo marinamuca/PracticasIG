@@ -287,12 +287,12 @@ for (j=0;j<num;j++)
   }
   
 
+ // tapa inferior
   vertices.resize(vertices.size()+1);
   caras.resize(caras.size()+num);
   vertices[vertices.size()-1].x=0;
   vertices[vertices.size()-1].y=perfil[0].y;
   vertices[vertices.size()-1].z=0;
- // tapa inferior
 if (fabs(perfil[0].x)>0.0) //Evitar que haya puntos sobre el eje y
   {
     for (int i=0; i<num-1; i++){
@@ -305,11 +305,27 @@ if (fabs(perfil[0].x)>0.0) //Evitar que haya puntos sobre el eje y
     caras[c]._0 = (num-1)*num_aux;
     caras[c]._1 = vertices.size()-1;;
     caras[c]._2 = 0;
+    c++;
   }
  
  // tapa superior
+  vertices.resize(vertices.size()+1);
+  caras.resize(caras.size()+num);
+  vertices[vertices.size()-1].x=0;
+  vertices[vertices.size()-1].y=perfil[num_aux-1].y;
+  vertices[vertices.size()-1].z=0;
  if (fabs(perfil[num_aux-1].x)>0.0)
   {
+    for (int i=0; i<num-1; i++){
+      caras[c]._0=(i+1)*num_aux-1;
+      caras[c]._1=vertices.size()-1;
+      caras[c]._2=(i+2)*num_aux-1;
+      c++;
+    }
+
+      caras[c]._0 = (num)*num_aux-1;
+      caras[c]._1 = vertices.size()-1;;
+      caras[c]._2 = num_aux-1;
   }
 }
 
