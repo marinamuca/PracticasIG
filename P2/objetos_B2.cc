@@ -288,16 +288,23 @@ for (j=0;j<num;j++)
   
 
   vertices.resize(vertices.size()+1);
-  caras.resize(caras.size()+1);
+  caras.resize(caras.size()+num);
   vertices[vertices.size()-1].x=0;
   vertices[vertices.size()-1].y=perfil[0].y;
   vertices[vertices.size()-1].z=0;
  // tapa inferior
 if (fabs(perfil[0].x)>0.0) //Evitar que haya puntos sobre el eje y
   {
-    caras[c]._0=0;
-    caras[c]._1=vertices.size()-1;
-    caras[c]._2=num_aux;
+    for (int i=0; i<num-1; i++){
+      caras[c]._0=i*num_aux;
+      caras[c]._1=vertices.size()-1;
+      caras[c]._2=num_aux*(i+1);
+      c++;
+    }
+
+    caras[c]._0 = (num-1)*num_aux;
+    caras[c]._1 = vertices.size()-1;;
+    caras[c]._2 = 0;
   }
  
  // tapa superior
