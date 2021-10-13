@@ -289,18 +289,46 @@ int main(int argc, char *argv[])
 	aux.x = 1.0;	aux.y = 1.0;	aux.z = 0.0;
 	perfil2.push_back(aux); */
 
-	//Nuevos puntos
-	aux.x = 1.2;	aux.y = -1.0;	aux.z = 0.0;
+	//Copa Clase
+	/* aux.x = 1.2;	aux.y = -1.0;	aux.z = 0.0;
 	perfil2.push_back(aux);
 	aux.x = 0.6;	aux.y = 1.0;	aux.z = 0.0;
 	perfil2.push_back(aux);
 	aux.x = 1.2;	aux.y = 1.2;	aux.z = 0.0;
 	perfil2.push_back(aux);
 	aux.x = 1.8;	aux.y = 1.8;	aux.z = 0.0;
+	perfil2.push_back(aux); */
+
+	aux.x = 1;	aux.y = 0;	aux.z = 0.0;
+	perfil2.push_back(aux);
+	aux.x = 0.8;	aux.y = 0.2;	aux.z = 0.0;
+	perfil2.push_back(aux);
+	aux.x = 1;	aux.y = 0.4;	aux.z = 0.0;
+	perfil2.push_back(aux);
+	aux.x = 1.2;	aux.y = 0.6;	aux.z = 0.0;
+	perfil2.push_back(aux); 
+	aux.x = 1.3;	aux.y = 0.8;	aux.z = 0.0;
+	perfil2.push_back(aux);
+	aux.x = 1.3;	aux.y = 1.0;	aux.z = 0.0;
+	perfil2.push_back(aux);
+	aux.x = 1.2;	aux.y = 1.2;	aux.z = 0.0;
+	perfil2.push_back(aux);
+	aux.x = 1.0;	aux.y = 1.4;	aux.z = 0.0;
+	perfil2.push_back(aux);
+	aux.x = 0.8;	aux.y = 1.6;	aux.z = 0.0;
+	perfil2.push_back(aux);
+	aux.x = 0.6;	aux.y = 1.8;	aux.z = 0.0;
+	perfil2.push_back(aux);
+	aux.x = 0.4;	aux.y = 2;	aux.z = 0.0;
+	perfil2.push_back(aux);
+	aux.x = 0.4;	aux.y = 2.6;	aux.z = 0.0;
+	perfil2.push_back(aux);
+	aux.x = 0.5;	aux.y = 2.8;	aux.z = 0.0;
+	perfil2.push_back(aux);
+	aux.x = 0.6;	aux.y = 3;	aux.z = 0.0;
 	perfil2.push_back(aux);
 
-
-	rotacion.parametros(perfil2, 12);
+	rotacion.parametros(perfil2, 24);
 
 	// se llama a la inicialización de glut
 	glutInit(&argc, argv);
