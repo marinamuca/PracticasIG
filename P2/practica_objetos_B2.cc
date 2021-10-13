@@ -37,6 +37,9 @@ _cubo cubo;
 _piramide piramide(0.85, 1.3);
 _objeto_ply ply;
 _rotacion rotacion;
+_cilindro cilindro(1,2,12);
+_cono cono(1,2,24);
+_esfera esfera(1, 12, 24);
 
 // _objeto_ply *ply1;
 
@@ -124,7 +127,10 @@ void draw_objects()
 		ply.draw(modo, 1.0, 0.6, 0.0, 0.0, 1.0, 0.3, 2);
 		break;
 	case ROTACION:
-		rotacion.draw(modo, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 2);
+		//rotacion.draw(modo, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 2);
+		//cilindro.draw(modo, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 2);
+		cono.draw(modo, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 2);
+		//esfera.draw(modo, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 2);
 		break;
 	}
 }
@@ -299,6 +305,7 @@ int main(int argc, char *argv[])
 	aux.x = 1.8;	aux.y = 1.8;	aux.z = 0.0;
 	perfil2.push_back(aux); */
 
+	//JARRON
 	aux.x = 1;	aux.y = 0;	aux.z = 0.0;
 	perfil2.push_back(aux);
 	aux.x = 0.8;	aux.y = 0.2;	aux.z = 0.0;
@@ -328,7 +335,8 @@ int main(int argc, char *argv[])
 	aux.x = 0.6;	aux.y = 3;	aux.z = 0.0;
 	perfil2.push_back(aux);
 
-	rotacion.parametros(perfil2, 24);
+	rotacion.parametros(perfil2, 24, 2);
+	
 
 	// se llama a la inicialización de glut
 	glutInit(&argc, argv);

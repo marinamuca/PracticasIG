@@ -228,12 +228,17 @@ _rotacion::_rotacion()
 }
 
 
-void _rotacion::parametros(vector<_vertex3f> perfil, int num)
+void _rotacion::parametros(vector<_vertex3f> perfil, int num, int tipo)
 {
 int i,j;
 _vertex3f vertice_aux;
 _vertex3i cara_aux;
 int num_aux;
+float radio;
+
+//Para esfera:
+if(tipo=0)
+  radio=sqrt(perfil[0].x*perfil[0].x+perfil[0].y*perfil[0].y);
 
 // tratamiento de los vértice
 //Para cada punto aplica una matriz de rotación 
@@ -252,80 +257,132 @@ for (j=0;j<num;j++)
      }
   }
 
-// tratamiento de las caras 
-  // Creacion de la parte laterla del solido pg 13 figura a
-     
-  caras.resize(2*(num_aux-1)*num); //Para un lado, para todos multiplicar por num 
-  //Triangulo que va del punto 0 al segundo punto del sig perfil
-  //Primera cara: caras[0]._0=0;  caras[0]._1=num_aux+1;  caras[0]._2=num_aux;
+// tratamiento de las caras
   int c = 0; //Contador de caras
-  for( int j = 0; j<(num-1); j++)
-  {
+
+    // Creacion de la parte lateral del solido pg 13 figura a
+
+    caras.resize(2 * (num_aux - 1) * num); //Para un lado, para todos multiplicar por num
+    //Triangulo que va del punto 0 al segundo punto del sig perfil
+    //Primera cara: caras[0]._0=0;  caras[0]._1=num_aux+1;  caras[0]._2=num_aux;
+  if(tipo != 1){ //Cono no tiene parte lateral
+    for (int j = 0; j < (num - 1); j++)
+    {
+      for (int i = 0; i < (num_aux - 1); i++)
+      {
+        caras[c]._0 = j * num_aux + i;
+        caras[c]._1 = (j + 1) * num_aux + i + 1;
+        caras[c]._2 = (j + 1) * num_aux + i;
+        c++;
+        caras[c]._0 = j * num_aux + i;
+        caras[c]._1 = j * num_aux + i + 1;
+        caras[c]._2 = (j + 1) * num_aux + i + 1;
+        c++;
+      }
+    }
+
+    //Tratamiento especial para el ultimo lado
     for (int i = 0; i < (num_aux - 1); i++)
     {
-      caras[c]._0 = j * num_aux + i;
-      caras[c]._1 = (j + 1) * num_aux + i + 1;
-      caras[c]._2 = (j + 1) * num_aux + i;
+      caras[c]._0 = (num - 1) * num_aux + i;
+      caras[c]._1 = i + 1;
+      caras[c]._2 = i;
       c++;
-      caras[c]._0 = j * num_aux + i;
-      caras[c]._1 = j * num_aux + i + 1;
-      caras[c]._2 = (j + 1) * num_aux + i + 1;
+      caras[c]._0 = (num - 1) * num_aux + i;
+      caras[c]._1 = (num - 1) * num_aux + i + 1;
+      caras[c]._2 = i + 1;
       c++;
     }
   }
 
-  //Tratamiento especial para el ultimo lado
-  for (int i=0; i<(num_aux-1); i++){
-    caras[c]._0 = (num-1) * num_aux + i;
-    caras[c]._1 = i+1;
-    caras[c]._2 = i;
-    c++;
-    caras[c]._0 = (num-1) * num_aux + i;
-    caras[c]._1 = (num-1) * num_aux + i + 1;
-    caras[c]._2 = i + 1;
-    c++;
-  }
-  
+    // tapa superior
+    if(tipo!=1)
+      vertices.resize(vertices.size()+1);
+    caras.resize(caras.size()+num);
+    vertices[vertices.size()-1].x=0;
+      vertices[vertices.size()-1].y=perfil[num_aux-1].y;
+    vertices[vertices.size()-1].z=0;
+  if (fabs(perfil[num_aux-1].x)>0.0)
+    {
+      for (int i=0; i<num-1; i++){
+        caras[c]._0=(i+1)*num_aux-1;
+        caras[c]._1=vertices.size()-1;
+        caras[c]._2=(i+2)*num_aux-1;
+        c++;
+      }
 
- // tapa inferior
-  vertices.resize(vertices.size()+1);
-  caras.resize(caras.size()+num);
-  vertices[vertices.size()-1].x=0;
-  vertices[vertices.size()-1].y=perfil[0].y;
-  vertices[vertices.size()-1].z=0;
-if (fabs(perfil[0].x)>0.0) //Evitar que haya puntos sobre el eje y
-  {
-    for (int i=0; i<num-1; i++){
-      caras[c]._0=i*num_aux;
-      caras[c]._1=vertices.size()-1;
-      caras[c]._2=num_aux*(i+1);
-      c++;
+        caras[c]._0 = (num)*num_aux-1;
+        caras[c]._1 = vertices.size()-1;;
+        caras[c]._2 = num_aux-1;
     }
 
-    caras[c]._0 = (num-1)*num_aux;
-    caras[c]._1 = vertices.size()-1;;
-    caras[c]._2 = 0;
-    c++;
-  }
- 
- // tapa superior
-  vertices.resize(vertices.size()+1);
-  caras.resize(caras.size()+num);
-  vertices[vertices.size()-1].x=0;
-  vertices[vertices.size()-1].y=perfil[num_aux-1].y;
-  vertices[vertices.size()-1].z=0;
- if (fabs(perfil[num_aux-1].x)>0.0)
-  {
-    for (int i=0; i<num-1; i++){
-      caras[c]._0=(i+1)*num_aux-1;
-      caras[c]._1=vertices.size()-1;
-      caras[c]._2=(i+2)*num_aux-1;
-      c++;
-    }
+  // tapa inferior
+    
+    vertices.resize(vertices.size()+1);
+    caras.resize(caras.size()+num);
+    vertices[vertices.size()-1].x=0;
+    vertices[vertices.size()-1].y=perfil[0].y;
+    vertices[vertices.size()-1].z=0;
+  if (fabs(perfil[0].x)>0.0) //Evitar que haya puntos sobre el eje y
+    {
+      for (int i=0; i<num-1; i++){
+        caras[c]._0=i*num_aux;
+        caras[c]._1=vertices.size()-1;
+        caras[c]._2=num_aux*(i+1);
+        c++;
+      }
 
-      caras[c]._0 = (num)*num_aux-1;
+      caras[c]._0 = (num-1)*num_aux;
       caras[c]._1 = vertices.size()-1;;
-      caras[c]._2 = num_aux-1;
-  }
+      caras[c]._2 = 0;
+      c++;
+    }
 }
 
+_esfera::_esfera(float radio, int n, int m){
+  vector<_vertex3f> perfil_aux;
+  _vertex3f aux;
+  
+
+  for (int i=1; i<n; i++){
+    aux.x=radio*cos(M_PI*i/n-M_PI/2.0); //Asi se calcula tb para los puntos de las tapas
+    aux.y=radio*sin(M_PI*i/n-M_PI/2.0);
+    aux.z=0.0;
+    perfil_aux.push_back(aux);
+  }
+  parametros(perfil_aux, m, 0);
+}
+
+_cono::_cono(float radio, int altura, int m){
+  vector<_vertex3f> perfil_aux;
+  _vertex3f aux;
+
+  aux.x=radio; 
+  aux.y=0.0;
+  aux.z=0.0;
+  perfil_aux.push_back(aux);
+
+  aux.x=0.0; 
+  aux.y=altura;
+  aux.z=0.0;
+  perfil_aux.push_back(aux);
+
+  parametros(perfil_aux, m, 1);
+} 
+
+_cilindro::_cilindro(float radio, int altura, int m){
+  vector<_vertex3f> perfil_aux;
+  _vertex3f aux;
+
+  aux.x=radio; 
+  aux.y=altura;
+  aux.z=0.0;
+  perfil_aux.push_back(aux);
+
+  aux.x=radio; 
+  aux.y=0.0;
+  aux.z=0.0;
+  perfil_aux.push_back(aux);
+
+  parametros(perfil_aux, m, 2);
+}

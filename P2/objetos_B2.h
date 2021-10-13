@@ -18,8 +18,6 @@ typedef enum{POINTS,EDGES,SOLID_CHESS,SOLID} _modo; //Modos de sintesis con imá
 class _puntos3D
 {
 public:
-
-  
 	_puntos3D();
 void 	draw_puntos(float r, float g, float b, int grosor);
 
@@ -87,9 +85,28 @@ class _rotacion: public _triangulos3D
 {
 public:
        _rotacion();
-void  parametros(vector<_vertex3f> perfil1, int num1);
+void  parametros(vector<_vertex3f> perfil1, int num1, int tipo); // Tipos 0: Esfera 1: Cono  2: Cilindro
 
 vector<_vertex3f> perfil; 
 int num;
 };
+
+
+//Hay que diferenciar el codigo de las tapas en la esfera; tapas = altura de r y menos r
+class _esfera: public _rotacion{
+	public:
+	_esfera(float radio, int n, int m);  // m => numero de meridianos (num perfiles) n => numero de paralelos (num puntos en un perfil)
+};
+
+class _cono: public _rotacion{ //No se le aplica parte lateral
+	public:
+	_cono(float radio, int altura, int m); // numero de lados (perfiles)
+};
+
+class _cilindro: public _rotacion{
+	public:
+	_cilindro(float radio, int altura, int m);
+};
+
+
 
