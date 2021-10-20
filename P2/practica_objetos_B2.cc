@@ -16,7 +16,10 @@ typedef enum
 	CUBO,
 	PIRAMIDE,
 	OBJETO_PLY,
-	ROTACION
+	ROTACION,
+	CILINDRO,
+	CONO,
+	ESFERA
 } _tipo_objeto;
 _tipo_objeto t_objeto = CUBO;
 _modo modo = POINTS;
@@ -127,11 +130,18 @@ void draw_objects()
 		ply.draw(modo, 1.0, 0.6, 0.0, 0.0, 1.0, 0.3, 2);
 		break;
 	case ROTACION:
-		//rotacion.draw(modo, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 2);
-		//cilindro.draw(modo, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 2);
-		cono.draw(modo, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 2);
-		//esfera.draw(modo, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 2);
+		rotacion.draw(modo, 142.0/255, 170.0/255, 200.0/255, 222.0/255, 173.0/255, 217.0/255, 2);
 		break;
+	case CILINDRO:
+		cilindro.draw(modo, 142.0/255, 170.0/255, 200.0/255, 222.0/255, 173.0/255, 217.0/255, 2);
+		break;
+	case CONO:
+		cono.draw(modo, 142.0/255, 170.0/255, 200.0/255, 222.0/255, 173.0/255, 217.0/255, 2);
+		break;
+	case ESFERA:
+		esfera.draw(modo, 142.0/255, 170.0/255, 200.0/255, 222.0/255, 173.0/255, 217.0/255, 2);
+		break;
+
 	}
 }
 
@@ -206,6 +216,15 @@ void normal_key(unsigned char Tecla1, int x, int y)
 		break;
 	case 'R':
 		t_objeto = ROTACION;
+		break;
+	case 'B':
+		t_objeto = CILINDRO;
+		break;
+	case 'N':
+		t_objeto = CONO;
+		break;
+	case 'M':
+		t_objeto = ESFERA;
 		break;
 	}
 	glutPostRedisplay();
@@ -335,7 +354,7 @@ int main(int argc, char *argv[])
 	aux.x = 0.6;	aux.y = 3;	aux.z = 0.0;
 	perfil2.push_back(aux);
 
-	rotacion.parametros(perfil2, 24, 2);
+	rotacion.parametros(perfil2, 24);
 	
 
 	// se llama a la inicialización de glut

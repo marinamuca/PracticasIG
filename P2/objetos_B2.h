@@ -85,7 +85,7 @@ class _rotacion: public _triangulos3D
 {
 public:
        _rotacion();
-void  parametros(vector<_vertex3f> perfil1, int num1, int tipo); // Tipos 0: Esfera 1: Cono  2: Cilindro
+void  parametros(vector<_vertex3f> perfil1, int num1, int tipo=0); // Tipos 0: Esfera 1: Cono  2: Cilindro
 
 vector<_vertex3f> perfil; 
 int num;
@@ -107,6 +107,3 @@ class _cilindro: public _rotacion{
 	public:
 	_cilindro(float radio, int altura, int m);
 };
-
-
-
