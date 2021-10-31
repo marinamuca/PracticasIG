@@ -42,7 +42,7 @@ _objeto_ply ply;
 _rotacion rotacion;
 _cilindro cilindro(1,2,12);
 _cono cono(1,2,24);
-_esfera esfera(1, 12, 24);
+_esfera esfera(1, 6, 24);
 
 // _objeto_ply *ply1;
 

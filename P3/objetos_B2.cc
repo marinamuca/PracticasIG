@@ -419,7 +419,13 @@ _cilindro::_cilindro(float radio, int altura, int m){
   _cabeza::_cabeza(){
       _esfera esfera_aux(0.5,20,20);
       esfera = esfera_aux;
+      _esfera camara_aux(0.5,20,20);
+      camara = camara_aux;
+
+      
+      
   }
+
 	void _cabeza::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor){
 
     glPushMatrix();
