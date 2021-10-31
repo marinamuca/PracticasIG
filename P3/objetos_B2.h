@@ -119,6 +119,15 @@ class _cabeza: public _triangulos3D{
 	_esfera esfera; // Cabeza
 };
 
+class _cuerpo : public _triangulos3D{
+	public:
+       	_cuerpo();
+		void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+
+	protected:
+	_cilindro cyl; // Cabeza
+};
+
 class _r2d2 : public _triangulos3D
 {
 public:
@@ -130,4 +139,5 @@ public:
 
 protected:
 	_cabeza cabeza;
+	_cuerpo cuerpo;
 };

@@ -423,12 +423,31 @@ _cilindro::_cilindro(float radio, int altura, int m){
 	void _cabeza::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor){
 
     glPushMatrix();
+    glTranslatef(0,1,0);
     esfera.draw( modo, r1, g1, b1, r2, g2, b2, grosor);
     glPopMatrix();
 
   }
 
 //************************************************************************
+
+//Clase Cuerpo
+
+ _cuerpo::_cuerpo(){
+      _cilindro cyl_aux(0.5,1,20);
+      cyl = cyl_aux;
+  }
+
+	void _cuerpo::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor){
+
+    glPushMatrix();
+    cyl.draw( modo, r1, g1, b1, r2, g2, b2, grosor);
+    glPopMatrix();
+
+  }
+
+//************************************************************************
+
 
 _r2d2::_r2d2() {
   giro_cabeza=2.0;
@@ -439,6 +458,7 @@ void _r2d2::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, f
 {
   glPushMatrix();
   cabeza.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+  cuerpo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
   glPopMatrix();
 
 };
