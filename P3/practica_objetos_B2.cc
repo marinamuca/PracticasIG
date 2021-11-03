@@ -271,6 +271,8 @@ void special_key(int Tecla1, int x, int y)
 	case GLUT_KEY_PAGE_DOWN:
 		Observer_distance /= 1.2;
 		break;
+	case GLUT_KEY_F3:r2d2.giro_cabeza+=5;break;
+    case GLUT_KEY_F4:r2d2.giro_cabeza-=5;break;
 	}
 	glutPostRedisplay();
 }

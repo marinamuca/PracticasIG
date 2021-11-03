@@ -120,7 +120,7 @@ switch (modo){
 _cubo::_cubo(float tam)
 {
 //vertices
-vertices.resize(8);
+/* vertices.resize(8);
 vertices[0].x=0; 	  vertices[0].y=0;	  vertices[0].z=0;
 vertices[1].x=0; 	  vertices[1].y=0;	  vertices[1].z=tam;
 vertices[2].x=tam; 	vertices[2].y=0;	  vertices[2].z=tam;
@@ -128,7 +128,18 @@ vertices[3].x=tam; 	vertices[3].y=0;	  vertices[3].z=0;
 vertices[4].x=tam; 	vertices[4].y=tam; 	vertices[4].z=0;
 vertices[5].x=0; 	  vertices[5].y=tam; 	vertices[5].z=0;
 vertices[6].x=0; 	  vertices[6].y=tam; 	vertices[6].z=tam;
-vertices[7].x=tam; 	vertices[7].y=tam; 	vertices[7].z=tam;
+vertices[7].x=tam; 	vertices[7].y=tam; 	vertices[7].z=tam; */
+
+vertices.resize(8);
+vertices[0].x=-tam/2; 	        vertices[0].y=-tam/2;	  vertices[0].z=-tam/2;
+vertices[1].x=-tam/2; 	        vertices[1].y=-tam/2;	  vertices[1].z=tam/2;
+vertices[2].x=tam/2; 	          vertices[2].y=-tam/2;	  vertices[2].z=tam/2;
+vertices[3].x=tam/2; 	          vertices[3].y=-tam/2;	  vertices[3].z=-tam/2;
+
+vertices[4].x=tam/2; 	          vertices[4].y=tam/2; 	  vertices[4].z=-tam/2;
+vertices[5].x=-tam/2; 	        vertices[5].y=tam/2; 	  vertices[5].z=-tam/2;
+vertices[6].x=-tam/2; 	        vertices[6].y=tam/2; 	  vertices[6].z=tam/2;
+vertices[7].x=tam/2; 	          vertices[7].y=tam/2;	  vertices[7].z=tam/2;
 
 // triangulos
 caras.resize(12);
@@ -228,7 +239,7 @@ _rotacion::_rotacion()
 }
 
 
-void _rotacion::parametros(vector<_vertex3f> perfil, int num, int tipo)
+void _rotacion::parametros(vector<_vertex3f> perfil, int num, int tipo, bool tapas)
 {
 int i,j;
 _vertex3f vertice_aux;
@@ -302,6 +313,7 @@ for (j=0;j<num;j++)
     }
   }
 
+  if(tapas){
     // tapa superior
     vertices.resize(vertices.size()+1);
     caras.resize(caras.size()+num);
@@ -362,6 +374,8 @@ for (j=0;j<num;j++)
       caras[c]._2 = 0;
       c++;
     } 
+
+  }
 }
 
 _esfera::_esfera(float radio, int n, int m){
@@ -394,7 +408,7 @@ _cono::_cono(float radio, int altura, int m){
   parametros(perfil_aux, m, 1);
 } 
 
-_cilindro::_cilindro(float radio, int altura, int m){
+_cilindro::_cilindro(float radio, int altura, int m, bool tapas){
   vector<_vertex3f> perfil_aux;
   _vertex3f aux;
  
@@ -409,23 +423,78 @@ _cilindro::_cilindro(float radio, int altura, int m){
   perfil_aux.push_back(aux);
 
 
-  parametros(perfil_aux, m, 0);
+  parametros(perfil_aux, m, 0, tapas);
 }
+
+//************************************************************************
+
+_prismaTrapezoidal::_prismaTrapezoidal(float tam)
+{
+//vertices
+vertices.resize(8);
+/* vertices[0].x=0; 	        vertices[0].y=0;	  vertices[0].z=0;
+vertices[1].x=0; 	        vertices[1].y=0;	  vertices[1].z=tam;
+vertices[2].x=tam; 	      vertices[2].y=0;	  vertices[2].z=tam;
+vertices[3].x=tam; 	      vertices[3].y=0;	  vertices[3].z=0;
+vertices[4].x=(3*tam)/4; 	vertices[4].y=tam; 	vertices[4].z=0;
+vertices[5].x=tam/4; 	        vertices[5].y=tam; 	vertices[5].z=0;
+vertices[6].x=tam/4; 	        vertices[6].y=tam; 	vertices[6].z=tam;
+vertices[7].x=(3*tam)/4; 	vertices[7].y=tam; 	vertices[7].z=tam; */
+
+vertices[0].x=-tam/2; 	        vertices[0].y=-tam/2;	  vertices[0].z=-tam/2;
+vertices[1].x=-tam/2; 	        vertices[1].y=-tam/2;	  vertices[1].z=tam/2;
+vertices[2].x=tam/2; 	          vertices[2].y=-tam/2;	  vertices[2].z=tam/2;
+vertices[3].x=tam/2; 	          vertices[3].y=-tam/2;	  vertices[3].z=-tam/2;
+
+vertices[4].x=tam/4; 	          vertices[4].y=tam/2; 	  vertices[4].z=-tam/4;
+vertices[5].x=-tam/4; 	        vertices[5].y=tam/2; 	  vertices[5].z=-tam/4;
+vertices[6].x=-tam/4; 	        vertices[6].y=tam/2; 	  vertices[6].z=tam/4;
+vertices[7].x=tam/4; 	          vertices[7].y=tam/2;	  vertices[7].z=tam/4;
+
+// triangulos
+caras.resize(12);
+caras[0]._0=0;	caras[0]._1=1;	caras[0]._2=3;
+caras[1]._0=2;	caras[1]._1=3;	caras[1]._2=1;
+caras[2]._0=1;	caras[2]._1=2;	caras[2]._2=6;
+caras[3]._0=2;	caras[3]._1=7;	caras[3]._2=6;
+caras[4]._0=2;	caras[4]._1=4;	caras[4]._2=7;
+caras[5]._0=2;	caras[5]._1=3;	caras[5]._2=4;
+caras[6]._0=3;	caras[6]._1=4;	caras[6]._2=0;
+caras[7]._0=0;	caras[7]._1=4;	caras[7]._2=5;
+caras[8]._0=0;	caras[8]._1=5;	caras[8]._2=6;
+caras[9]._0=1;	caras[9]._1=0;	caras[9]._2=6;
+caras[10]._0=6;	caras[10]._1=7;	caras[10]._2=4;
+caras[11]._0=4;	caras[11]._1=5;	caras[11]._2=6;
+
+}
+
 
 //************************************************************************
 
 //Clase Cabeza:
 
   _cabeza::_cabeza(){
-      _esfera esfera_aux(0.5,20,20);
-      esfera = esfera_aux;
   }
 	void _cabeza::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor){
 
+    /* glPushMatrix();
+      glTranslatef(-0.25,-0.25,-0.25);
+      glRotatef(-45,1,0,0);
+      glScalef(0.75,0.6,0.10);
+      glTranslatef(0,0,7);
+      prisma.draw(modo, 0, 0, 1, 0, 0, 0, grosor);
+    glPopMatrix(); */
+
     glPushMatrix();
-    glTranslatef(0,1,0);
+    glTranslatef(0,0.25,0.40);
+    glScalef(0.17,0.17,0.17);
+    esfera.draw(modo, 0, 0, 0, 1, 1, 1, grosor);
+    glPopMatrix();
+
+    glPushMatrix();
     esfera.draw( modo, r1, g1, b1, r2, g2, b2, grosor);
     glPopMatrix();
+
 
   }
 
@@ -434,8 +503,6 @@ _cilindro::_cilindro(float radio, int altura, int m){
 //Clase Cuerpo
 
  _cuerpo::_cuerpo(){
-      _cilindro cyl_aux(0.5,1,20);
-      cyl = cyl_aux;
   }
 
 	void _cuerpo::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor){
@@ -448,6 +515,36 @@ _cilindro::_cilindro(float radio, int altura, int m){
 
 //************************************************************************
 
+  //Clase Patas
+  _pata::_pata(){
+    _cilindro cyl_aux(0.5, 1, 20, true);
+    cyl = cyl_aux;
+  }
+
+  void _pata::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor){
+
+    glPushMatrix();
+    glScalef(0.375, 0.25, 0.5);
+    base.draw( modo, 0, 0, 0, r2, g2, b2, grosor);
+    glPopMatrix();
+
+    glPushMatrix();
+    glScalef(0.375/2, 0.25, 0.5/2);
+    glTranslatef(0,0.375,0);
+    cyl.draw(modo, 0, 0, 1, r2, g2, b2, grosor);
+    glPopMatrix();
+
+    glPushMatrix();
+    glScalef(0.32, 1.25, 0.5/2);
+    glTranslatef(0,0.5,0);
+    cubo.draw(modo, 0, 0, 0, r2, g2, b2, grosor);
+    glPopMatrix();
+
+
+  }
+
+
+//************************************************************************
 
 _r2d2::_r2d2() {
   giro_cabeza=2.0;
@@ -456,9 +553,18 @@ _r2d2::_r2d2() {
 
 void _r2d2::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
 {
-  glPushMatrix();
+  /* glPushMatrix();
+  glTranslatef(0,1,0);
+  glRotatef(giro_cabeza,0,1,0);
   cabeza.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+  glPopMatrix();
+
+  glPushMatrix();
   cuerpo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+  glPopMatrix(); */
+
+  glPushMatrix();
+  patas.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
   glPopMatrix();
 
 };

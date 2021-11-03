@@ -85,7 +85,7 @@ class _rotacion: public _triangulos3D
 {
 public:
        _rotacion();
-void  parametros(vector<_vertex3f> perfil1, int num1, int tipo=0); // Tipos 0: Esfera 1: Cono  2: Cilindro
+void  parametros(vector<_vertex3f> perfil1, int num1, int tipo=0, bool tapas=true); // Tipos 0: Esfera 1: Cono  2: Cilindro
 
 vector<_vertex3f> perfil; 
 int num;
@@ -107,16 +107,23 @@ class _cono: public _rotacion{ //No se le aplica parte lateral
 
 class _cilindro: public _rotacion{
 	public:
-	_cilindro(float radio=0.5, int altura=1, int m=20);
+	_cilindro(float radio=0.5, int altura=1, int m=20, bool tapas=true);
 };
 
-class _cabeza: public _triangulos3D{
+class _prismaTrapezoidal: public _triangulos3D
+{
+public:
+	_prismaTrapezoidal(float tam=1);
+};
+
+class _cabeza : public _triangulos3D{
 	public:
        	_cabeza();
 		void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
 
 	protected:
-	_esfera esfera; // Cabeza
+		_prismaTrapezoidal prisma;
+		_esfera esfera; // Cabeza y camara
 };
 
 class _cuerpo : public _triangulos3D{
@@ -126,6 +133,27 @@ class _cuerpo : public _triangulos3D{
 
 	protected:
 	_cilindro cyl; // Cabeza
+};
+
+class _pata : public _triangulos3D{
+	public:
+       	_pata();
+		void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+
+	protected:
+	_prismaTrapezoidal base; 
+	_cilindro cyl;
+	_cubo cubo;
+};
+
+class _patas : public _triangulos3D{
+	public:
+       	_patas();
+		void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+
+	protected:
+	_pata pataizq, patadcha;
+	_cilindro joint;
 };
 
 class _r2d2 : public _triangulos3D
@@ -140,4 +168,5 @@ public:
 protected:
 	_cabeza cabeza;
 	_cuerpo cuerpo;
+	_patas patas;
 };
