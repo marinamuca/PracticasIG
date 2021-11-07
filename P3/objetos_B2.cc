@@ -471,6 +471,57 @@ caras[11]._0=4;	caras[11]._1=5;	caras[11]._2=6;
 
 //************************************************************************
 
+//Hexagono
+_hexagono::_hexagono(float tam){
+  vertices.resize(14);
+  vertices[0].x=tam*cos(M_PI/3);    vertices[0].y=-tam*sin(M_PI/3);	    vertices[0].z=tam/2;
+  vertices[1].x=-tam*cos(M_PI/3);   vertices[1].y=-tam*sin(M_PI/3);		  vertices[1].z=tam/2;
+  vertices[2].x=-tam; 	            vertices[2].y=0;                    vertices[2].z=tam/2;
+  vertices[3].x=-tam*cos(M_PI/3); 	vertices[3].y=tam*sin(M_PI/3);		  vertices[3].z=tam/2;
+  vertices[4].x=tam*cos(M_PI/3); 	  vertices[4].y=tam*sin(M_PI/3);	 	  vertices[4].z=tam/2;
+  vertices[5].x=tam; 	              vertices[5].y=0;	                  vertices[5].z=tam/2;
+  vertices[6].x=0;	                vertices[6].y=0; 	                  vertices[6].z=tam/2;
+
+  vertices[7].x=tam*cos(M_PI/3);	  vertices[7].y=tam*sin(M_PI/3); 	    vertices[7].z=-tam/2;
+  vertices[8].x=-tam*cos(M_PI/3); 	vertices[8].y=tam*sin(M_PI/3);	    vertices[8].z=-tam/2;
+  vertices[9].x=-tam; 	            vertices[9].y=0; 	                  vertices[9].z=-tam/2;
+  vertices[10].x=-tam*cos(M_PI/3); 	vertices[10].y=-tam*sin(M_PI/3);	  vertices[10].z=-tam/2;
+  vertices[11].x=tam*cos(M_PI/3);;  vertices[11].y=-tam*sin(M_PI/3); 	  vertices[11].z=-tam/2;
+  vertices[12].x=tam;	              vertices[12].y=0;	                  vertices[12].z=-tam/2;
+  vertices[13].x=0;	                vertices[13].y=0; 	                vertices[13].z=-tam/2;
+
+  caras.resize(24);
+  caras[0]._0=1;	caras[0]._1=0;	caras[0]._2=6;
+  caras[1]._0=2;	caras[1]._1=1;	caras[1]._2=6;
+  caras[2]._0=3;	caras[2]._1=2;	caras[2]._2=6;
+  caras[3]._0=4;	caras[3]._1=3;	caras[3]._2=6;
+  caras[4]._0=5;	caras[4]._1=4;	caras[4]._2=6;
+  caras[5]._0=0;	caras[5]._1=5;	caras[5]._2=6;
+
+  caras[6]._0=0;	caras[6]._1=1;	  caras[6]._2=10;
+  caras[7]._0=1;	caras[7]._1=2;	  caras[7]._2=10;
+  caras[8]._0=2;	caras[8]._1=9;	  caras[8]._2=10;
+  caras[9]._0=2;	caras[9]._1=8;	  caras[9]._2=9;
+  caras[10]._0=2;	caras[10]._1=3;	  caras[10]._2=8;
+  caras[11]._0=3;	caras[11]._1=7;	  caras[11]._2=8;
+  caras[12]._0=3;	caras[12]._1=4;	  caras[12]._2=7;
+  caras[13]._0=4;	caras[13]._1=12;	caras[13]._2=7;
+  caras[14]._0=4;	caras[14]._1=5;	  caras[14]._2=12;
+  caras[15]._0=5;	caras[15]._1=11;	caras[15]._2=12;
+  caras[16]._0=5;	caras[16]._1=0;	  caras[16]._2=11;
+  caras[17]._0=0;	caras[17]._1=10;	caras[17]._2=11;
+
+  caras[18]._0=11;	caras[18]._1=10;	caras[18]._2=13;
+  caras[19]._0=12;	caras[19]._1=11;	caras[19]._2=13;
+  caras[20]._0=7;	  caras[20]._1=12;	caras[20]._2=13;
+  caras[21]._0=8;	  caras[21]._1=7;	  caras[21]._2=13;
+  caras[22]._0=9;	  caras[22]._1=8;	  caras[22]._2=13;
+  caras[23]._0=10;	caras[23]._1=9;	  caras[23]._2=13;
+}
+
+//************************************************************************
+
+
 //Clase Cabeza:
 
   _cabeza::_cabeza(){
@@ -517,53 +568,97 @@ caras[11]._0=4;	caras[11]._1=5;	caras[11]._2=6;
 
   //Clase Patas
   _pata::_pata(){
-    _cilindro cyl_aux(0.5, 1, 20, true);
-    cyl = cyl_aux;
+    
   }
 
   void _pata::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor){
 
+
     glPushMatrix();
     glScalef(0.375, 0.25, 0.5);
-    base.draw( modo, 0, 0, 0, r2, g2, b2, grosor);
+    base.draw( modo, r1, g1, b1, r2, g2, b2, grosor);
     glPopMatrix();
 
     glPushMatrix();
     glScalef(0.375/2, 0.25, 0.5/2);
     glTranslatef(0,0.375,0);
-    cyl.draw(modo, 0, 0, 1, r2, g2, b2, grosor);
+    cyl.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
     glPopMatrix();
 
     glPushMatrix();
     glScalef(0.32, 1.25, 0.5/2);
     glTranslatef(0,0.5,0);
-    cubo.draw(modo, 0, 0, 0, r2, g2, b2, grosor);
+    cubo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
     glPopMatrix();
 
+    glPushMatrix();
+    glRotatef(90,0,1,0);
+    glTranslatef(0,1,0);
+    glScalef(0.25, 0.25, 0.25);
+    hex.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+    glPopMatrix();
 
   }
 
+//************************************************************************
+
+//Clase Patas
+_patas::_patas(){
+}
+
+void _patas::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor){
+    glPushMatrix();
+    glTranslatef(0.625,-0.25,0);
+    glScalef(1,1.125,1);
+    patadcha.draw( modo, 0, 0, 0, r2, g2, b2, grosor);
+    glPopMatrix(); 
+
+    _pata pataizq=patadcha;
+    glPushMatrix();
+    glTranslatef(-0.625,-0.25,0);
+    glScalef(1,1.125,1);
+    pataizq.draw( modo, 0, 0, 0, r2, g2, b2, grosor);
+    glPopMatrix(); 
+
+    glPushMatrix();
+    glTranslatef(0,0.885,0);
+    glScalef(1.52,0.125,0.125);
+    glRotatef(90,0,0,1);
+    glTranslatef(0,-0.5,0);
+    joint.draw(modo, 1, 1, 1, r2, g2, b2, grosor);
+    glPopMatrix();
+
+}
 
 //************************************************************************
 
 _r2d2::_r2d2() {
   giro_cabeza=2.0;
   giro_cuerpo=0.0;
+  giro_cuerpo_min=-20.0;
+  giro_cuerpo_max=20.0;
 };
 
 void _r2d2::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
 {
-  /* glPushMatrix();
-  glTranslatef(0,1,0);
-  glRotatef(giro_cabeza,0,1,0);
-  cabeza.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+  glPushMatrix();
+    glTranslatef(0,1,0);
+    glRotatef(giro_cuerpo, 1,0,0);
+
+    glPushMatrix();
+    glRotatef(giro_cabeza,0,1,0);
+    cabeza.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0,-1,0);
+    cuerpo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+    glPopMatrix();
   glPopMatrix();
 
-  glPushMatrix();
-  cuerpo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-  glPopMatrix(); */
 
   glPushMatrix();
+  glTranslatef(0,0.125,0);
   patas.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
   glPopMatrix();
 

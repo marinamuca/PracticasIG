@@ -112,8 +112,18 @@ class _cilindro: public _rotacion{
 
 class _prismaTrapezoidal: public _triangulos3D
 {
-public:
-	_prismaTrapezoidal(float tam=1);
+	public:
+		_prismaTrapezoidal(float tam=1);
+};
+
+class _hexagono: public _triangulos3D{
+	public:
+		_hexagono(float tam=1);
+};
+
+class _conoTrunc: public _rotacion{
+	public:
+	_conoTrunc(float radio=0.5, int altura=1, int m=20, bool tapas=true);
 };
 
 class _cabeza : public _triangulos3D{
@@ -144,6 +154,7 @@ class _pata : public _triangulos3D{
 	_prismaTrapezoidal base; 
 	_cilindro cyl;
 	_cubo cubo;
+	_hexagono hex;
 };
 
 class _patas : public _triangulos3D{
@@ -152,7 +163,7 @@ class _patas : public _triangulos3D{
 		void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
 
 	protected:
-	_pata pataizq, patadcha;
+	_pata patadcha;
 	_cilindro joint;
 };
 
@@ -164,6 +175,8 @@ public:
 
 	float giro_cabeza;
 	float giro_cuerpo;
+	float giro_cuerpo_min, giro_cuerpo_max;
+
 
 protected:
 	_cabeza cabeza;

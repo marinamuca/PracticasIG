@@ -144,7 +144,8 @@ void draw_objects()
 		esfera.draw(modo, 142.0/255, 170.0/255, 200.0/255, 222.0/255, 173.0/255, 217.0/255, 2);
 		break;
 	case ARTICULADO:
-		r2d2.draw(modo, 142.0/255, 170.0/255, 200.0/255, 222.0/255, 173.0/255, 217.0/255, 2);
+		//r2d2.draw(modo, 142.0/255, 170.0/255, 200.0/255, 222.0/255, 173.0/255, 217.0/255, 2);
+		r2d2.draw(modo, 1, 1, 1, 222.0/255, 173.0/255, 217.0/255, 2);
 		break;
 
 	}
@@ -271,6 +272,13 @@ void special_key(int Tecla1, int x, int y)
 	case GLUT_KEY_PAGE_DOWN:
 		Observer_distance /= 1.2;
 		break;
+	case GLUT_KEY_F1:	r2d2.giro_cuerpo-=1;
+						if (r2d2.giro_cuerpo<r2d2.giro_cuerpo_min) r2d2.giro_cuerpo=r2d2.giro_cuerpo_min;
+                        break;
+
+    case GLUT_KEY_F2:	r2d2.giro_cuerpo+=1;
+						if (r2d2.giro_cuerpo>r2d2.giro_cuerpo_max) r2d2.giro_cuerpo=r2d2.giro_cuerpo_max;
+                        break;
 	case GLUT_KEY_F3:r2d2.giro_cabeza+=5;break;
     case GLUT_KEY_F4:r2d2.giro_cabeza-=5;break;
 	}
@@ -297,7 +305,7 @@ void initialize(void)
 
 	// se indica cua*ply1l sera el color para limpiar la ventana	(r,v,a,al)
 	// blanco=(1,1,1,1) rojo=(1,0,0,1), ...
-	glClearColor(1, 1, 1, 1);
+	glClearColor(142.0/255, 170.0/255, 200.0/255, 1);
 
 	// se habilita el z-bufer
 	glEnable(GL_DEPTH_TEST);
