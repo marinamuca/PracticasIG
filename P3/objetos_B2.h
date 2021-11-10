@@ -126,29 +126,59 @@ class _conoTrunc: public _rotacion{
 	_conoTrunc(float radio=0.5, int altura=1, int m=20, bool tapas=true);
 };
 
+class _tapa: public _rotacion{
+	public:
+	_tapa(float radio=0.5, int altura=1, int m=20);
+	void parametros(vector<_vertex3f> perfil1, int num1, int tipo=0);
+};
+
+class _casco: public _rotacion{
+	public:
+	_casco(float radio=0.5, int n=20, int m=20);
+};
+
+
+
 class _cabeza : public _triangulos3D{
 	public:
        	_cabeza();
 		void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
 
 	protected:
-		_prismaTrapezoidal prisma;
+		//_prismaTrapezoidal prisma;
 		_esfera esfera; // Cabeza y camara
+		_casco casco;
+};
+
+class _tool : public _triangulos3D{
+	public:
+		_tool();
+		void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float r3, float g3, float b3, float grosor);
+		float giro_cyl;
+	protected:
+		_cilindro mango;
+		_cilindro tool; 
 };
 
 class _cuerpo : public _triangulos3D{
 	public:
        	_cuerpo();
-		void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+		void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float r3, float g3, float b3, float grosor);
+		float giro_tapa, giro_tool, giro_cyl;
+
 
 	protected:
 	_cilindro cyl; // Cabeza
+	_conoTrunc cono;
+	_cubo pie;
+	_tapa tapa;
+	_tool tool;
 };
 
 class _pata : public _triangulos3D{
 	public:
        	_pata();
-		void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+		void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float r3, float g3, float b3, float grosor);
 
 	protected:
 	_prismaTrapezoidal base; 
@@ -160,10 +190,10 @@ class _pata : public _triangulos3D{
 class _patas : public _triangulos3D{
 	public:
        	_patas();
-		void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+		void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float r3, float g3, float b3, float grosor);
 
 	protected:
-	_pata patadcha;
+	_pata pata;
 	_cilindro joint;
 };
 
@@ -171,15 +201,17 @@ class _r2d2 : public _triangulos3D
 {
 public:
 	_r2d2();
-	void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+	void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float r3, float g3, float b3, float grosor);
 
-	float giro_cabeza;
-	float giro_cuerpo;
+	float giro_cabeza, giro_cyl;
+	float giro_cuerpo, giro_tapaC, giro_tapaMax, giro_tapaMin;
 	float giro_cuerpo_min, giro_cuerpo_max;
+	float giro_tool, giro_toolMax, giro_toolMin;
 
 
 protected:
 	_cabeza cabeza;
 	_cuerpo cuerpo;
 	_patas patas;
+	_prismaTrapezoidal pie;
 };

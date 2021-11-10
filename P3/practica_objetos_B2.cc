@@ -50,6 +50,25 @@ _r2d2 r2d2;
 
 //**************************************************************************
 //
+int flag=0;
+int mov=0;
+
+void movimiento(){
+
+	r2d2.giro_cabeza+=mov*5;
+	if(flag==0){
+		r2d2.giro_cuerpo+=mov;
+		if(r2d2.giro_cuerpo>r2d2.giro_cuerpo_max)
+			flag = 1;
+	} else {
+		r2d2.giro_cuerpo-=mov;
+		if(r2d2.giro_cuerpo<r2d2.giro_cuerpo_min)
+			flag = 0;
+	}
+
+	if(mov != 0)
+		glutPostRedisplay();
+}
 //***************************************************************************
 
 void clean_window()
@@ -145,7 +164,7 @@ void draw_objects()
 		break;
 	case ARTICULADO:
 		//r2d2.draw(modo, 142.0/255, 170.0/255, 200.0/255, 222.0/255, 173.0/255, 217.0/255, 2);
-		r2d2.draw(modo, 1, 1, 1, 222.0/255, 173.0/255, 217.0/255, 2);
+		r2d2.draw(modo, 1, 1, 1, 37.0/255, 101.0/255, 190.0/255, 179.0/255, 179.0/255, 181.0/255,2);
 		break;
 
 	}
@@ -235,6 +254,12 @@ void normal_key(unsigned char Tecla1, int x, int y)
 	case 'A':
 		t_objeto=ARTICULADO;
 		break;
+	case '5':
+		mov=1;
+		break;
+	case '6':
+		mov=0;
+		break;
 	}
 	glutPostRedisplay();
 }
@@ -272,15 +297,33 @@ void special_key(int Tecla1, int x, int y)
 	case GLUT_KEY_PAGE_DOWN:
 		Observer_distance /= 1.2;
 		break;
-	case GLUT_KEY_F1:	r2d2.giro_cuerpo-=1;
-						if (r2d2.giro_cuerpo<r2d2.giro_cuerpo_min) r2d2.giro_cuerpo=r2d2.giro_cuerpo_min;
+	case GLUT_KEY_F1:	r2d2.giro_cuerpo+=2;
+						if (r2d2.giro_cuerpo>r2d2.giro_cuerpo_max) 
+							r2d2.giro_cuerpo=r2d2.giro_cuerpo_max;
                         break;
 
-    case GLUT_KEY_F2:	r2d2.giro_cuerpo+=1;
-						if (r2d2.giro_cuerpo>r2d2.giro_cuerpo_max) r2d2.giro_cuerpo=r2d2.giro_cuerpo_max;
+    case GLUT_KEY_F2:	r2d2.giro_cuerpo-=2;
+						if (r2d2.giro_cuerpo<r2d2.giro_cuerpo_min) 
+							r2d2.giro_cuerpo=r2d2.giro_cuerpo_min;
                         break;
-	case GLUT_KEY_F3:r2d2.giro_cabeza+=5;break;
-    case GLUT_KEY_F4:r2d2.giro_cabeza-=5;break;
+	case GLUT_KEY_F3:r2d2.giro_cabeza-=5;break;
+    case GLUT_KEY_F4:r2d2.giro_cabeza+=5;break;
+	case GLUT_KEY_F6:	r2d2.giro_tapaC+=5;
+						if (r2d2.giro_tapaC>r2d2.giro_tapaMax) r2d2.giro_tapaC=r2d2.giro_tapaMax;
+                        break;
+    case GLUT_KEY_F5:	r2d2.giro_tapaC-=5;
+						if (r2d2.giro_tapaC<r2d2.giro_tapaMin) r2d2.giro_tapaC=r2d2.giro_tapaMin;
+                        break;
+	case GLUT_KEY_F7:	r2d2.giro_tool+=5;
+						if (r2d2.giro_tool>r2d2.giro_toolMax) r2d2.giro_tool=r2d2.giro_toolMax;
+                        break;
+    case GLUT_KEY_F8:	r2d2.giro_tool-=5;
+						if (r2d2.giro_tool<r2d2.giro_toolMin) r2d2.giro_tool=r2d2.giro_toolMin;
+                        break;
+	case GLUT_KEY_F9:	r2d2.giro_cyl+=5;
+                        break;
+    case GLUT_KEY_F10:	r2d2.giro_cyl-=5;
+                        break;
 	}
 	glutPostRedisplay();
 }
@@ -397,7 +440,7 @@ int main(int argc, char *argv[])
 
 	// llamada para crear la ventana, indicando el titulo (no se visualiza hasta que se llama
 	// al bucle de eventos)
-	glutCreateWindow("PRACTICA - 2");
+	glutCreateWindow("PRACTICA - 3 -> R2D2");
 
 	// asignación de la funcion llamada "dibujar" al evento de dibujo
 	glutDisplayFunc(draw);
@@ -407,6 +450,8 @@ int main(int argc, char *argv[])
 	glutKeyboardFunc(normal_key);
 	// asignación de la funcion llamada "tecla_Especial" al evento correspondiente
 	glutSpecialFunc(special_key);
+
+	glutIdleFunc(movimiento);
 
 	// funcion de inicialización
 	initialize();
@@ -420,3 +465,4 @@ int main(int argc, char *argv[])
 	glutMainLoop();
 	return 0;
 }
+
