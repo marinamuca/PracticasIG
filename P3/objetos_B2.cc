@@ -831,6 +831,10 @@ void _patas::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, 
 //************************************************************************
 
 _r2d2::_r2d2() {
+  restetGiro();
+}
+
+void _r2d2::restetGiro(){
   giro_cabeza=2.0;
   giro_cuerpo=0.0;
   giro_cuerpo_min=-25.0;
@@ -842,7 +846,8 @@ _r2d2::_r2d2() {
   giro_toolMin=0;
   giro_toolMax=0;
   giro_cyl=0;
-};
+}
+
 
 void _r2d2::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float r3, float g3, float b3, float grosor)
 {
@@ -887,4 +892,4 @@ void _r2d2::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, f
   glPopMatrix(); 
  
   
-};
+}

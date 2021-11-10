@@ -50,21 +50,35 @@ _r2d2 r2d2;
 
 //**************************************************************************
 //
-int flag=0;
-int mov=0;
+float mov=0;
+int flagCuerpo=0, flagPuerta=0, flagTool=0;
 
 void movimiento(){
 
-	r2d2.giro_cabeza+=mov*5;
-	if(flag==0){
-		r2d2.giro_cuerpo+=mov;
-		if(r2d2.giro_cuerpo>r2d2.giro_cuerpo_max)
-			flag = 1;
-	} else {
+	if(r2d2.giro_cabeza<2*360)
+		r2d2.giro_cabeza+=mov*5;
+	r2d2.giro_cyl+=5;
+
+	if(flagCuerpo==0){
 		r2d2.giro_cuerpo-=mov;
-		if(r2d2.giro_cuerpo<r2d2.giro_cuerpo_min)
-			flag = 0;
-	}
+		if(r2d2.giro_cuerpo<r2d2.giro_cuerpo_min){
+			r2d2.giro_cuerpo = r2d2.giro_cuerpo_min;
+			flagCuerpo = 1;
+		}
+	} else if (flagCuerpo==1 && flagPuerta==0){
+		r2d2.giro_tapaC-=2*mov;
+		if(r2d2.giro_tapaC<r2d2.giro_tapaMin){
+			r2d2.giro_tapaC = r2d2.giro_tapaMin;
+			flagPuerta = 1;
+		}
+	} else if(flagPuerta==1){
+		r2d2.giro_tool+=mov;
+		if(r2d2.giro_tool>70){
+			r2d2.giro_tool = r2d2.giro_toolMax;
+			flagTool==1;
+		}
+
+	} 
 
 	if(mov != 0)
 		glutPostRedisplay();
@@ -255,10 +269,17 @@ void normal_key(unsigned char Tecla1, int x, int y)
 		t_objeto=ARTICULADO;
 		break;
 	case '5':
-		mov=1;
+		mov=0.5;
 		break;
 	case '6':
 		mov=0;
+		r2d2.restetGiro();
+		flagCuerpo=0;
+		flagPuerta=0;
+		flagTool=0;
+		break;
+	case '7':
+		mov+=0.5;
 		break;
 	}
 	glutPostRedisplay();
