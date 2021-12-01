@@ -51,7 +51,7 @@ _r2d2 r2d2;
 //**************************************************************************
 //
 float mov=0;
-int flagCuerpo=0, flagPuerta=0, flagTool=0;
+int flagCuerpo=0, flagPuerta=0, flagTool=0, alfa=0, beta=0;
 
 void movimiento(){
 
@@ -187,17 +187,32 @@ void draw_objects()
 //**************************************************************************
 // LUCES
 //***************************************************************************
- void luces (){
+ void luces (float alfa, float beta){  //float alfa, float beta
 	float  luz1[]={1.0, 1.0, 1.0, 1.0},
-			pos1[]= {0, 20.0, 40.0, 1.0}; //Cuidado con no ponerla dentro del objeto
+			pos1[]= {0, 20.0, 40.0, 1.0}, //Cuidado con no ponerla dentro del objeto
+			luz2[]={0.54, 0.89, 0.63, 1.0 },
+			pos2[]= {-20.0, 20.0, 40.0, 1.0};
 
 	glLightfv (GL_LIGHT1, GL_DIFFUSE, luz1); 
 	glLightfv (GL_LIGHT1, GL_SPECULAR, luz1); //Si no le ponemos componente esepcular, no tiene brillo, por lo qeu no cambia segun observador
 
+	glPushMatrix();
+	glRotatef(alfa, 0,1,0);
 	glLightfv (GL_LIGHT1, GL_POSITION, pos1);
+	glPopMatrix();
+
+	glLightfv (GL_LIGHT2, GL_DIFFUSE, luz2); 
+	glLightfv (GL_LIGHT2, GL_SPECULAR, luz2);
+
+	glPushMatrix();
+	glRotatef(beta, 0,1,0);
+	glLightfv (GL_LIGHT2, GL_POSITION, pos2);
+	glPopMatrix();
 
 	glDisable(GL_LIGHT0);
 	glEnable(GL_LIGHT1);
+	glEnable(GL_LIGHT2);
+
  }
 
 
@@ -210,7 +225,7 @@ void draw(void)
 
 	clean_window();
 	change_observer();
-	luces();
+	luces(alfa, beta);
 	draw_axis();
 	draw_objects();
 	glutSwapBuffers();
@@ -304,6 +319,18 @@ void normal_key(unsigned char Tecla1, int x, int y)
 		break;
 	case '9':
 		modo = SOLID_ILLUMINATED_GOURAUD;
+		break;
+	case 'L':
+		alfa += 5;
+		break;
+	case 'K':
+		alfa -= 5;
+		break;
+	case 'U':
+		beta += 5;
+		break;
+	case 'I':
+		beta -= 5;
 		break;
 	}
 	glutPostRedisplay();

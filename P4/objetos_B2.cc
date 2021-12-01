@@ -107,6 +107,8 @@ void _triangulos3D::draw_solido_ajedrez(float r1, float g1, float b1, float r2, 
 
 void 	_triangulos3D::draw_iluminacion_suave( ){
   int i;
+  if(!b_normales_caras)
+    calcular_normales_caras();
   if (b_normales_vertices==false) calcular_normales_vertices(); //Calculamos lasnormales alas caras si no se han calcuado ya
   
   glEnable (GL_LIGHTING);
@@ -190,7 +192,7 @@ void _triangulos3D::calcular_normales_caras (){
 //*************************************************************************
 
 
-void _triangulos3D::calcular_normales_vertices (){
+/* void _triangulos3D::calcular_normales_vertices (){
     
   _vertex3f sumaNormalesC, media;
 
@@ -227,6 +229,32 @@ void _triangulos3D::calcular_normales_vertices (){
   b_normales_vertices=true; 
 
 }
+ */
+void _triangulos3D::calcular_normales_vertices (){
+    
+  _vertex3f sumaNormalesC, media;
+
+  float totalNormalesC=0.0;
+  normales_vertices.resize(vertices.size());
+
+  
+
+  for(int i=0; i<vertices.size(); i++){
+    normales_vertices[i].x=0.0;
+    normales_vertices[i].y=0.0;
+    normales_vertices[i].z=0.0;
+  }
+
+    
+    for (int i=0; i<caras.size(); i++){
+      normales_vertices[caras[i]._0]+=normales_caras[i];
+      normales_vertices[caras[i]._1]+=normales_caras[i];
+      normales_vertices[caras[i]._2]+=normales_caras[i];
+    }
+
+  b_normales_vertices=true; 
+
+}
 
 //*************************************************************************
 // dibujar con distintos modos
@@ -250,6 +278,9 @@ switch (modo){
 
 _cubo::_cubo(float tam)
 {
+  ambiente_difusa = _vertex4f(1.0f, 1.0f, 1.0f, 1.0f);     //coeficientes ambiente y difuso
+  especular = _vertex4f(0.7f,0.7f,0.7f,1.0f);     //coeficiente especular
+  brillo = 86.2;
 //vertices
 /* vertices.resize(8);
 vertices[0].x=0; 	  vertices[0].y=0;	  vertices[0].z=0;
@@ -465,14 +496,14 @@ for (j=0;j<num;j++)
     {
       for (int i=0; i<num-1; i++){
         caras[c]._0=(i+1)*num_aux-1;
-        caras[c]._2=vertices.size()-1;
-        caras[c]._1=(i+2)*num_aux-1;
+        caras[c]._1=vertices.size()-1;
+        caras[c]._2=(i+2)*num_aux-1;
         c++;
       }
 
         caras[c]._0 = (num)*num_aux-1;
-        caras[c]._2 = vertices.size()-1;;
-        caras[c]._1 = num_aux-1;
+        caras[c]._1 = vertices.size()-1;;
+        caras[c]._2 = num_aux-1;
         c++;
     }
 
@@ -513,6 +544,10 @@ _esfera::_esfera(float radio, int n, int m){
   vector<_vertex3f> perfil_aux;
   _vertex3f aux;
   
+  ambiente_difusa = _vertex4f(1.0f, 1.0f, 1.0f, 1.0f);     //coeficientes ambiente y difuso
+  especular = _vertex4f(0.7f,0.7f,0.7f,1.0f);     //coeficiente especular
+  brillo = 86.2;  
+
   for (int i=1; i<n; i++){
     aux.x=radio*cos(M_PI*i/n-M_PI/2.0); //Asi se calcula tb para los puntos de las tapas
     aux.y=radio*sin(M_PI*i/n-M_PI/2.0);
@@ -520,11 +555,24 @@ _esfera::_esfera(float radio, int n, int m){
     perfil_aux.push_back(aux);
   }
   parametros(perfil_aux, m, 2);
+
+  normales_vertices.resize(vertices.size());
+  for(int i=0; i<vertices.size(); i++){
+    normales_vertices[i].x=vertices[i].x;
+    normales_vertices[i].y=vertices[i].y;
+    normales_vertices[i].z=vertices[i].z;
+  }
+
+  b_normales_vertices=true;
 }
 
 _cono::_cono(float radio, int altura, int m){
   vector<_vertex3f> perfil_aux;
   _vertex3f aux;
+
+  ambiente_difusa = _vertex4f(1.0f, 1.0f, 1.0f, 1.0f);     //coeficientes ambiente y difuso
+  especular = _vertex4f(0.7f,0.7f,0.7f,1.0f);     //coeficiente especular
+  brillo = 86.2;
 
   aux.x=radio; 
   aux.y=0.0;
@@ -542,6 +590,10 @@ _cono::_cono(float radio, int altura, int m){
 _cilindro::_cilindro(float radio, int altura, int m, bool tapas){
   vector<_vertex3f> perfil_aux;
   _vertex3f aux;
+
+  ambiente_difusa = _vertex4f(1.0f, 1.0f, 1.0f, 1.0f);     //coeficientes ambiente y difuso
+  especular = _vertex4f(0.7f,0.7f,0.7f,1.0f);     //coeficiente especular
+  brillo = 86.2;
  
   aux.x=radio; 
   aux.y=0.0;
@@ -561,6 +613,10 @@ _cilindro::_cilindro(float radio, int altura, int m, bool tapas){
 
 _prismaTrapezoidal::_prismaTrapezoidal(float tam)
 {
+
+  ambiente_difusa = _vertex4f(1.0f, 1.0f, 1.0f, 1.0f);     //coeficientes ambiente y difuso
+  especular = _vertex4f(0.7f,0.7f,0.7f,1.0f);     //coeficiente especular
+  brillo = 86.2;
 //vertices
 vertices.resize(8);
 /* vertices[0].x=0; 	        vertices[0].y=0;	  vertices[0].z=0;
@@ -604,6 +660,9 @@ caras[11]._0=4;	caras[11]._1=5;	caras[11]._2=6;
 
 //Hexagono
 _hexagono::_hexagono(float tam){
+  ambiente_difusa = _vertex4f(1.0f, 1.0f, 1.0f, 1.0f);     //coeficientes ambiente y difuso
+  especular = _vertex4f(0.7f,0.7f,0.7f,1.0f);     //coeficiente especular
+  brillo = 86.2;
   vertices.resize(14);
   vertices[0].x=tam*cos(M_PI/3);    vertices[0].y=-tam*sin(M_PI/3);	    vertices[0].z=tam/2;
   vertices[1].x=-tam*cos(M_PI/3);   vertices[1].y=-tam*sin(M_PI/3);		  vertices[1].z=tam/2;
@@ -656,6 +715,10 @@ _conoTrunc::_conoTrunc(float radio, int altura, int m, bool tapas){
   vector<_vertex3f> perfil_aux;
   _vertex3f aux;
 
+  ambiente_difusa = _vertex4f(1.0f, 1.0f, 1.0f, 1.0f);     //coeficientes ambiente y difuso
+  especular = _vertex4f(0.5f, 0.5f, 0.5f, 0.922f);     //coeficiente especular
+  brillo = 60;  
+
   aux.x=radio-0.1; 
   aux.y=0.0;
   aux.z=0.0;
@@ -666,7 +729,6 @@ _conoTrunc::_conoTrunc(float radio, int altura, int m, bool tapas){
   aux.z=0.0;
   perfil_aux.push_back(aux);
 
-
   parametros(perfil_aux, m, 0, tapas);
 }
 
@@ -675,6 +737,10 @@ _conoTrunc::_conoTrunc(float radio, int altura, int m, bool tapas){
 //Clase Tapa
 
 _tapa::_tapa(float radio, int altura, int m){
+
+  ambiente_difusa = _vertex4f(0.2, 0.4, 0.9, 1.0); //coeficientes ambiente y difuso
+  especular = _vertex4f(0.5, 0.5, 0.5, 1.0);       //coeficiente especular
+  brillo = 50; 
 
   vector<_vertex3f> perfil_aux;
   _vertex3f aux;
@@ -735,12 +801,12 @@ void _tapa::parametros(vector<_vertex3f> perfil, int num, int tipo)
     for (int i = 0; i < (num_aux - 1); i++)
     {
       caras[c]._0 = j * num_aux + i;
-      caras[c]._1 = (j + 1) * num_aux + i + 1;
-      caras[c]._2 = (j + 1) * num_aux + i;
+      caras[c]._2 = (j + 1) * num_aux + i + 1;
+      caras[c]._1 = (j + 1) * num_aux + i;
       c++;
       caras[c]._0 = j * num_aux + i;
-      caras[c]._1 = j * num_aux + i + 1;
-      caras[c]._2 = (j + 1) * num_aux + i + 1;
+      caras[c]._2 = j * num_aux + i + 1;
+      caras[c]._1 = (j + 1) * num_aux + i + 1;
       c++;
     }
   }
@@ -767,7 +833,7 @@ _casco::_casco(float radio, int n, int m){
   }
 
 
-  parametros(perfil_semi, m, 2, false);
+  parametros(perfil_semi, m, 2, false); 
 }
 
 //************************************************************************
@@ -776,6 +842,8 @@ _casco::_casco(float radio, int n, int m){
 //Clase Cabeza:
 
   _cabeza::_cabeza(){
+    
+    
   }
 	void _cabeza::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor){
 
@@ -790,16 +858,26 @@ _casco::_casco(float radio, int n, int m){
     glPushMatrix();
     glTranslatef(0,0.25,0.40);
     glScalef(0.17,0.17,0.17);
+    esfera.ambiente_difusa = _vertex4f(0.01f, 0.01f, 0.01f, 1.0f);     //coeficientes ambiente y difuso
+    esfera.especular = _vertex4f(0.4f, 0.4f, 0.4f, 1.0f);     //coeficiente especular
+    esfera.brillo = 100.0;
     esfera.draw(modo, 0, 0, 0, 0.2, 0.2, 0.2, grosor);
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(0,0.01,0);
     glRotatef(180,1,0,0);
+    casco.ambiente_difusa = _vertex4f(0.2, 0.4, 0.9, 1.0); //coeficientes ambiente y difuso
+    casco.especular = _vertex4f(0.5, 0.5, 0.5, 1.0);       //coeficiente especular
+    casco.brillo = 50; 
     casco.draw( modo, r2, g2, b2, r2-0.1, g2-0.1, b2-0.1, grosor);
     glPopMatrix();
 
     glPushMatrix();
+    esfera.ambiente_difusa = _vertex4f(1.0f, 1.0f, 1.0f, 1.0f);     //coeficientes ambiente y difuso
+    esfera.especular = _vertex4f(0.7f,0.7f,0.7f,1.0f);     //coeficiente especular
+    esfera.brillo = 86.2;
+
     esfera.draw( modo, r1, g1, b1, r1-0.1, g1-0.1, b1-0.1, grosor);
     glPopMatrix();
 
@@ -817,6 +895,9 @@ _tool::_tool(){
       glRotatef(180,1,0,0);
       glPushMatrix();
       glScalef(0.05,2,0.05);
+      mango.ambiente_difusa = _vertex4f(0.2775f, 0.2775f, 0.2775f, 1.0f);     //coeficientes ambiente y difuso
+      mango.especular = _vertex4f(0.773911f, 0.773911f, 0.773911f, 1.0f);     //coeficiente especular
+      mango.brillo = 89.6f;
       mango.draw( modo, r2, g2, b2, r2+0.1, g2+0.1, b2+0.1, grosor);
       glPopMatrix();
 
@@ -825,6 +906,9 @@ _tool::_tool(){
       glRotatef(90,0,0,1);
       glScalef(1,0.1,1);
       glRotatef(giro_cyl,0,1,0);
+      tool.ambiente_difusa = _vertex4f(0.2775f, 0.2775f, 0.2775f, 1.0f);     //coeficientes ambiente y difuso
+      tool.especular = _vertex4f(0.773911f, 0.773911f, 0.773911f, 1.0f);     //coeficiente especular
+      tool.brillo = 89.6f;
       tool.draw( modo, r3, g3, b3, r3-0.1, g3-0.1, b3-0.1, grosor);
       glPopMatrix();
     glPopMatrix();
@@ -850,6 +934,9 @@ _tool::_tool(){
 	void _cuerpo::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float r3, float g3, float b3, float grosor){
 
     glPushMatrix();
+    cyl.ambiente_difusa = _vertex4f(1.0f, 1.0f, 1.0f, 1.0f);     //coeficientes ambiente y difuso
+    cyl.especular = _vertex4f(0.7f,0.7f,0.7f,1.0f);     //coeficiente especular
+    cyl.brillo = 86.2;
     cyl.draw( modo, r1, g1, b1, r1-0.1, g1-0.1, b1-0.1, grosor);
     glPopMatrix();
 
@@ -857,6 +944,9 @@ _tool::_tool(){
     //CUELLO
     glTranslatef(0,0.9,0);
     glScalef(1.01,0.1,1.01);
+    cyl.ambiente_difusa = _vertex4f(0.2, 0.4, 0.9, 1.0); //coeficientes ambiente y difuso
+    cyl.especular = _vertex4f(0.5, 0.5, 0.5, 1.0);       //coeficiente especular
+    cyl.brillo = 50; 
     cyl.draw( modo, r2, g2, b2, r2-0.1, g2-0.1, b2-0.1, grosor);
     glPopMatrix();
     
@@ -878,6 +968,9 @@ _tool::_tool(){
     glPushMatrix();
     glTranslatef(0,-0.17,0);
     glScalef(0.2,0.45,0.2);
+    pie.ambiente_difusa = _vertex4f(0.2, 0.4, 0.9, 1.0); //coeficientes ambiente y difuso
+    pie.especular = _vertex4f(0.5, 0.5, 0.5, 1.0);       //coeficiente especular
+    pie.brillo = 50; 
     pie.draw(modo, r3, g3, b3, r3-0.1, g3-0.1, b3-0.1, grosor);
     glPopMatrix();
 
@@ -917,6 +1010,9 @@ _tool::_tool(){
     glPushMatrix();
     glScalef(0.32, 1.25, 0.5/2);
     glTranslatef(0,0.5,0);
+    cubo.ambiente_difusa = _vertex4f(0.2, 0.4, 0.9, 1.0); //coeficientes ambiente y difuso
+    cubo.especular = _vertex4f(0.5, 0.5, 0.5, 1.0);       //coeficiente especular
+    cubo.brillo = 50; 
     cubo.draw(modo, r2, g2, b2, r2-0.1, g2-0.1, b2-0.1, grosor);
     glPopMatrix();
 
@@ -954,6 +1050,9 @@ void _patas::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, 
     glScalef(1.52,0.125,0.125);
     glRotatef(90,0,0,1);
     glTranslatef(0,-0.5,0);
+    joint.ambiente_difusa = _vertex4f(0.2, 0.4, 0.9, 1.0); //coeficientes ambiente y difuso
+    joint.especular = _vertex4f(0.5, 0.5, 0.5, 1.0);       //coeficiente especular
+    joint.brillo = 50; 
     joint.draw(modo, r3, g3, b3, r3-0.1, g3-0.1, b3-0.1, grosor);
     glPopMatrix();
 
