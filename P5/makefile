@@ -12,7 +12,7 @@ CPPFLAGS:= -Wall -fmax-errors=2 -g
 CC= g++
 
 x: $(EJECUTABLE)
-	./$(EJECUTABLE) beethoven
+	./$(EJECUTABLE) ant
 
 $(EJECUTABLE): $(MODULOS)	
 	$(CC) -o $(EJECUTABLE) $(LDFLAGS) $(MODULOS) $(LIBS) 

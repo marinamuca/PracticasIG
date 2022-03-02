@@ -1,5 +1,5 @@
 //**************************************************************************
-// Práctica 1 usando objetos
+// Práctica 5 usando objetos
 //**************************************************************************
 
 #include <GL/glut.h>
@@ -49,6 +49,10 @@ _r2d2 r2d2;
 // _objeto_ply *ply1;
 
 int estadoRaton[3], xc, yc;
+int cambio = 0;
+float zoom = 1;
+
+int Ancho, Alto;
 
 void pick_color(int x, int y);
 
@@ -56,8 +60,11 @@ void pick_color(int x, int y);
 //
 //**************************************************************************
 
-float mov=0;
+float mov=0, mov_camara=0;
 int flagCuerpo=0, flagPuerta=0, flagTool=0, alfa=0, beta=0;
+
+//void movimientoCamara();
+
 
 void movimiento(){
 
@@ -171,16 +178,16 @@ void draw_objects()
 		ply.draw(modo, 1.0, 0.6, 0.0, 0.0, 1.0, 0.3, 2);
 		break;
 	case ROTACION:
-		rotacion.draw(modo, 142.0/255, 170.0/255, 200.0/255, 222.0/255, 173.0/255, 217.0/255, 2);
+		rotacion.draw(modo, 1, 1, 1, 222.0/255, 173.0/255, 217.0/255, 2);
 		break;
 	case CILINDRO:
-		cilindro.draw(modo, 142.0/255, 170.0/255, 200.0/255, 222.0/255, 173.0/255, 217.0/255, 2);
+		cilindro.draw(modo, 1, 1, 1, 222.0/255, 173.0/255, 217.0/255, 2);
 		break;
 	case CONO:
-		cono.draw(modo, 142.0/255, 170.0/255, 200.0/255, 222.0/255, 173.0/255, 217.0/255, 2);
+		cono.draw(modo, 1, 1, 1, 222.0/255, 173.0/255, 217.0/255, 2);
 		break;
 	case ESFERA:
-		esfera.draw(modo, 142.0/255, 170.0/255, 200.0/255, 222.0/255, 173.0/255, 217.0/255, 2);
+		esfera.draw(modo, 1, 1, 1, 222.0/255, 173.0/255, 217.0/255, 2);
 		break;
 	case ARTICULADO:
 		//r2d2.draw(modo, 142.0/255, 170.0/255, 200.0/255, 222.0/255, 173.0/255, 217.0/255, 2);
@@ -221,6 +228,64 @@ void draw_objects()
 
  }
 
+//**************************************************************************
+// VISTA ORTO
+//***************************************************************************
+
+void vista_orto(){
+
+  //Alzado
+  glViewport(Ancho/2,Alto/2,Ancho/2,Alto/2);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glOrtho(-5*zoom, 5*zoom, -5*zoom, 5*zoom, -100*zoom, 100*zoom);
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  luces(alfa, beta);
+  draw_axis();
+  draw_objects(); 
+
+  //Planta
+  glViewport(0,Alto/2,Ancho/2,Alto/2);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glOrtho(-5*zoom, 5*zoom, -5*zoom, 5*zoom, -100*zoom, 100*zoom);
+  glRotatef(90, 1, 0, 0);
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  luces(alfa, beta);
+  draw_axis();
+  draw_objects(); 
+
+  //Perfil
+  glViewport(0,0,Ancho/2,Alto/2);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glOrtho(-5*zoom, 5*zoom, -5*zoom, 5*zoom, -100*zoom, 100*zoom);
+  glRotatef(90, 0, 1, 0);
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  luces(alfa, beta);
+  draw_axis();
+  draw_objects(); 
+
+  //Perspectiva
+  glViewport(Ancho/2,0,Ancho/2,Alto/2);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glFrustum(-Size_x,Size_x,-Size_y,Size_y,Front_plane,Back_plane);
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glTranslatef(0,0,-Observer_distance);
+  glRotatef(Observer_angle_x,1,0,0);
+  glRotatef(Observer_angle_y,0,1,0);
+  /* glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity(); */
+  luces(alfa, beta);
+  draw_axis();
+  draw_objects(); 
+}
+
 
 
 //**************************************************************************
@@ -228,13 +293,30 @@ void draw_objects()
 //**************************************************************************
 void draw(void)
 {
-
+	glDrawBuffer(GL_FRONT);
 	clean_window();
-	change_observer();
-	luces(alfa, beta);
-	draw_axis();
-	draw_objects();
-	glutSwapBuffers();
+
+	if (cambio == 0){
+		glViewport(0,0,Ancho,Alto);
+		change_projection();
+		change_observer();
+		luces(alfa, beta);
+		draw_axis();
+		draw_objects();
+	} else  
+		vista_orto();
+
+	if (t_objeto==ARTICULADO){
+		glDrawBuffer(GL_BACK);
+		//glDrawBuffer(GL_FRONT); // Se veria gris la parte de fuera, es decir aplica seleccion a la parte de fuera
+		clean_window();
+		change_observer();
+		r2d2.seleccion();
+	
+	}
+	
+	glFlush();
+	//glutSwapBuffers(); // no se puede utilizar para seleccion de color.
 }
 
 //***************************************************************************
@@ -253,6 +335,8 @@ void change_window_size(int Ancho1, int Alto1)
 	Size_y = Size_x * Aspect_ratio;
 	change_projection();
 	glViewport(0, 0, Ancho1, Alto1);
+	Ancho = Ancho1;
+	Alto = Alto1;
 	glutPostRedisplay();
 }
 
@@ -338,12 +422,16 @@ void normal_key(unsigned char Tecla1, int x, int y)
 	case 'I':
 		beta -= 5;
 		break;
+	case '.':cambio=0;break;
+	case ',':cambio=1;break;
+	case '+':zoom*=0.9;break;
+	case '-':zoom*=1.1;break;
 	}
 	glutPostRedisplay();
 }
 
 //***************************************************************************
-// Funcion l-olamada cuando se aprieta una tecla especial
+// Funcion llamada cuando se aprieta una tecla especial
 //
 // el evento manda a la funcion:
 // codigo de la tecla
@@ -412,38 +500,39 @@ void special_key(int Tecla1, int x, int y)
 
 void clickRaton( int boton, int estado, int x, int y )
 {
-if(boton== GLUT_RIGHT_BUTTON) {
-   if( estado == GLUT_DOWN) {
-      estadoRaton[2] = 1;
-      xc=x;
-      yc=y;
-     } 
-   else estadoRaton[2] = 1;
-   }
-if(boton== GLUT_LEFT_BUTTON) {
-  if( estado == GLUT_DOWN) {
-      estadoRaton[2] = 2;
-      xc=x;
-      yc=y;
-      pick_color(xc, yc);
-    } 
-  }
+	if (boton == GLUT_RIGHT_BUTTON) {
+		if (estado == GLUT_DOWN) {
+			estadoRaton[2] = 1;
+			xc = x;
+			yc = y;
+		}
+		else
+			estadoRaton[2] = 1;
+	}
+	if (boton == GLUT_LEFT_BUTTON) {
+		if (estado == GLUT_DOWN){
+			estadoRaton[2] = 2;
+			xc = x;
+			yc = y;
+			pick_color(xc, yc);
+		}
+	}
 }
 
 /*************************************************************************/
 
 void getCamara (GLfloat *x, GLfloat *y)
 {
-*x=Observer_angle_x;
-*y=Observer_angle_y;
+	*x = Observer_angle_x;
+	*y = Observer_angle_y;
 }
 
 /*************************************************************************/
 
 void setCamara (GLfloat x, GLfloat y)
 {
-Observer_angle_x=x;
-Observer_angle_y=y;
+	Observer_angle_x = x;
+	Observer_angle_y = y;
 }
 
 
@@ -452,48 +541,52 @@ Observer_angle_y=y;
 
 void RatonMovido( int x, int y )
 {
-float x0, y0, xn, yn; 
-if(estadoRaton[2]==1) 		// solo cambia si la telca esta pulsada
-    {getCamara(&x0,&y0); 	// lee valores actuales de la camara
-     yn=y0+(y-yc);			// calcula los nuevos valores de los angulos a partir de los calores previos de los angulos + (posicion del raton ahora - posicion del raton antes)
-     xn=x0-(x-xc);
-     setCamara(xn,yn);
-     xc=x;
-     yc=y;
-     glutPostRedisplay();
-    }
+	float x0, y0, xn, yn;
+	if (estadoRaton[2] == 1) // solo cambia si la tecla esta pulsada
+	{
+		getCamara(&x0, &y0); // lee valores actuales de la camara
+		yn = y0 + (y - yc);	 // calcula los nuevos valores de los angulos a partir de los valores previos de los angulos + (posicion del raton ahora - posicion del raton antes)
+		xn = x0 - (x - xc);
+		setCamara(xn, yn);
+		xc = x;
+		yc = y;
+		glutPostRedisplay();
+	}
 }
 
- void procesar_color(unsigned char color[3])
-{
-int i;
+/* void movimientoCamara(){
+	GLfloat x0, y0;
+	getCamara(&x0, &y0); // lee valores actuales de la camara
+	setCamara(x0+mov*5, y0);
+		glutPostRedisplay();
 
-/* for (i=0;i<r2d2.piezas;i++)
-   {if (color[0]==r2d2.color_selec[0][i])
-       {if (tanque.activo[i]==0) 
-                      {tanque.activo[i]=1;
-                      }
-                  else 
-                      {tanque.activo[i]=0;
-                      }
-         glutPostRedisplay();
-        }
-    }  */               
- } 
+} */
 
+void procesar_color(unsigned char color[3]) {
+	int i;
 
+	for (i = 0; i < r2d2.piezas; i++) {
+		if (color[0] == r2d2.color_selec[0][i]) {
+			if (r2d2.activo[i] == 0)
+				r2d2.activo[i] = 1;
+			else
+				r2d2.activo[i] = 0;
+			glutPostRedisplay();
+		}
+	}
+}
 
 void pick_color(int x, int y)
 {
-GLint viewport[4];
-unsigned char pixel[3];
+	GLint viewport[4];
+	unsigned char pixel[3];
 
-glGetIntegerv(GL_VIEWPORT, viewport);
-glReadBuffer(GL_BACK);
-glReadPixels(x,viewport[3]-y,1,1,GL_RGB,GL_UNSIGNED_BYTE,(GLubyte *) &pixel[0]);
-printf(" valor x %d, valor y %d, color %d, %d, %d \n",x,y,pixel[0],pixel[1],pixel[2]);
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	glReadBuffer(GL_BACK);
+	glReadPixels(x, viewport[3] - y, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, (GLubyte *)&pixel[0]);
+	printf(" valor x %d, valor y %d, color %d, %d, %d \n", x, y, pixel[0], pixel[1], pixel[2]);
 
-procesar_color(pixel);
+	procesar_color(pixel);
 }
 
 
@@ -609,7 +702,7 @@ int main(int argc, char *argv[])
 
 	// llamada para crear la ventana, indicando el titulo (no se visualiza hasta que se llama
 	// al bucle de eventos)
-	glutCreateWindow("PRACTICA - 3 -> R2D2");
+	glutCreateWindow("PRACTICA - 5 -> R2D2");
 
 	// asignación de la funcion llamada "dibujar" al evento de dibujo
 	glutDisplayFunc(draw);
@@ -621,6 +714,13 @@ int main(int argc, char *argv[])
 	glutSpecialFunc(special_key);
 
 	glutIdleFunc(movimiento);
+
+
+	// eventos ratón
+	glutMouseFunc( clickRaton );
+	glutMotionFunc( RatonMovido );
+
+	//glutIdleFunc(movimientoCamara);
 
 	// funcion de inicialización
 	initialize();

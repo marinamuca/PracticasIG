@@ -192,44 +192,6 @@ void _triangulos3D::calcular_normales_caras (){
 //*************************************************************************
 
 
-/* void _triangulos3D::calcular_normales_vertices (){
-    
-  _vertex3f sumaNormalesC, media;
-
-  float totalNormalesC=0.0;
-  normales_vertices.resize(vertices.size());
-
-  if(!b_normales_caras)
-    calcular_normales_caras();
-
-  for(int i=0; i<vertices.size(); i++){
-    sumaNormalesC.x=0;
-    sumaNormalesC.y=0;
-    sumaNormalesC.z=0;
-    
-    for (int j=0; j<caras.size(); j++){
-       if (vertices[caras[j]._0] == vertices[i] || vertices[caras[j]._1] == vertices[i] || vertices[caras[j]._2] == vertices[i]){
-        sumaNormalesC.x+=normales_caras[j].x;
-        sumaNormalesC.y+=normales_caras[j].y;
-        sumaNormalesC.z+=normales_caras[j].z;
-        totalNormalesC++;
-      } 
-    }
-    
-    media.x=sumaNormalesC.x/totalNormalesC;
-    media.y=sumaNormalesC.y/totalNormalesC;
-    media.z=sumaNormalesC.z/totalNormalesC;
-
-    // modulo
-    float m=sqrt(media.x*media.x+media.y*media.y+media.z*media.z);
-    // normalización
-    	normales_vertices[i]= _vertex3f(media.x/m, media.y/m, media.z/m);
-	}
-    
-  b_normales_vertices=true; 
-
-}
- */
 void _triangulos3D::calcular_normales_vertices (){
     
   _vertex3f sumaNormalesC, media;
@@ -257,6 +219,25 @@ void _triangulos3D::calcular_normales_vertices (){
 }
 
 //*************************************************************************
+// dibujar en modo seleccion
+//*************************************************************************
+
+void _triangulos3D::draw_seleccion(int r, int g, int b)
+{
+  int i;
+
+  glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+  glColor3ub(r,g,b);
+  glBegin(GL_TRIANGLES);
+  for (i=0;i<caras.size();i++){
+    glVertex3fv((GLfloat *) &vertices[caras[i]._0]);
+    glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
+    glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
+    }
+  glEnd();
+}
+
+//*************************************************************************
 // dibujar con distintos modos
 //*************************************************************************
 
@@ -269,6 +250,8 @@ switch (modo){
 	case SOLID:draw_solido(r1, g1, b1);break;
   case SOLID_ILLUMINATED_FLAT:draw_iluminacion_plana( );break;
   case SOLID_ILLUMINATED_GOURAUD:draw_iluminacion_suave();break;
+  case SELECT:draw_seleccion(r1, g1, b1);break;
+
 	}
 }
 
@@ -281,42 +264,32 @@ _cubo::_cubo(float tam)
   ambiente_difusa = _vertex4f(1.0f, 1.0f, 1.0f, 1.0f);     //coeficientes ambiente y difuso
   especular = _vertex4f(0.7f,0.7f,0.7f,1.0f);     //coeficiente especular
   brillo = 86.2;
-//vertices
-/* vertices.resize(8);
-vertices[0].x=0; 	  vertices[0].y=0;	  vertices[0].z=0;
-vertices[1].x=0; 	  vertices[1].y=0;	  vertices[1].z=tam;
-vertices[2].x=tam; 	vertices[2].y=0;	  vertices[2].z=tam;
-vertices[3].x=tam; 	vertices[3].y=0;	  vertices[3].z=0;
-vertices[4].x=tam; 	vertices[4].y=tam; 	vertices[4].z=0;
-vertices[5].x=0; 	  vertices[5].y=tam; 	vertices[5].z=0;
-vertices[6].x=0; 	  vertices[6].y=tam; 	vertices[6].z=tam;
-vertices[7].x=tam; 	vertices[7].y=tam; 	vertices[7].z=tam; */
+  //vertices
+  vertices.resize(8);
+  vertices[0].x=-tam/2; 	        vertices[0].y=-tam/2;	  vertices[0].z=-tam/2;
+  vertices[1].x=-tam/2; 	        vertices[1].y=-tam/2;	  vertices[1].z=tam/2;
+  vertices[2].x=tam/2; 	          vertices[2].y=-tam/2;	  vertices[2].z=tam/2;
+  vertices[3].x=tam/2; 	          vertices[3].y=-tam/2;	  vertices[3].z=-tam/2;
 
-vertices.resize(8);
-vertices[0].x=-tam/2; 	        vertices[0].y=-tam/2;	  vertices[0].z=-tam/2;
-vertices[1].x=-tam/2; 	        vertices[1].y=-tam/2;	  vertices[1].z=tam/2;
-vertices[2].x=tam/2; 	          vertices[2].y=-tam/2;	  vertices[2].z=tam/2;
-vertices[3].x=tam/2; 	          vertices[3].y=-tam/2;	  vertices[3].z=-tam/2;
+  vertices[4].x=tam/2; 	          vertices[4].y=tam/2; 	  vertices[4].z=-tam/2;
+  vertices[5].x=-tam/2; 	        vertices[5].y=tam/2; 	  vertices[5].z=-tam/2;
+  vertices[6].x=-tam/2; 	        vertices[6].y=tam/2; 	  vertices[6].z=tam/2;
+  vertices[7].x=tam/2; 	          vertices[7].y=tam/2;	  vertices[7].z=tam/2;
 
-vertices[4].x=tam/2; 	          vertices[4].y=tam/2; 	  vertices[4].z=-tam/2;
-vertices[5].x=-tam/2; 	        vertices[5].y=tam/2; 	  vertices[5].z=-tam/2;
-vertices[6].x=-tam/2; 	        vertices[6].y=tam/2; 	  vertices[6].z=tam/2;
-vertices[7].x=tam/2; 	          vertices[7].y=tam/2;	  vertices[7].z=tam/2;
-
-// triangulos
-caras.resize(12);
-caras[0]._0=0;	caras[0]._1=1;	caras[0]._2=3;
-caras[1]._0=2;	caras[1]._1=3;	caras[1]._2=1;
-caras[2]._0=1;	caras[2]._1=2;	caras[2]._2=6;
-caras[3]._0=2;	caras[3]._1=7;	caras[3]._2=6;
-caras[4]._0=2;	caras[4]._1=4;	caras[4]._2=7;
-caras[5]._0=2;	caras[5]._1=3;	caras[5]._2=4;
-caras[6]._0=3;	caras[6]._1=4;	caras[6]._2=0;
-caras[7]._0=0;	caras[7]._1=4;	caras[7]._2=5;
-caras[8]._0=0;	caras[8]._1=5;	caras[8]._2=6;
-caras[9]._0=1;	caras[9]._1=0;	caras[9]._2=6;
-caras[10]._0=6;	caras[10]._1=7;	caras[10]._2=4;
-caras[11]._0=4;	caras[11]._1=5;	caras[11]._2=6;
+  // triangulos
+  caras.resize(12);
+  caras[0]._0=0;	caras[0]._1=1;	caras[0]._2=3;
+  caras[1]._0=2;	caras[1]._1=3;	caras[1]._2=1;
+  caras[2]._0=1;	caras[2]._1=2;	caras[2]._2=6;
+  caras[3]._0=2;	caras[3]._1=7;	caras[3]._2=6;
+  caras[4]._0=2;	caras[4]._1=4;	caras[4]._2=7;
+  caras[5]._0=2;	caras[5]._1=3;	caras[5]._2=4;
+  caras[6]._0=3;	caras[6]._1=4;	caras[6]._2=0;
+  caras[7]._0=0;	caras[7]._1=4;	caras[7]._2=5;
+  caras[8]._0=0;	caras[8]._1=5;	caras[8]._2=6;
+  caras[9]._0=1;	caras[9]._1=0;	caras[9]._2=6;
+  caras[10]._0=6;	caras[10]._1=7;	caras[10]._2=4;
+  caras[11]._0=4;	caras[11]._1=5;	caras[11]._2=6;
 }
 
 
@@ -326,7 +299,9 @@ caras[11]._0=4;	caras[11]._1=5;	caras[11]._2=6;
 
 _piramide::_piramide(float tam, float al)
 {
-
+  ambiente_difusa = _vertex4f(1.0f, 1.0f, 1.0f, 1.0f);     //coeficientes ambiente y difuso
+  especular = _vertex4f(0.7f,0.7f,0.7f,1.0f);     //coeficiente especular
+  brillo = 86.2;
 //vertices 
 vertices.resize(5); 
 vertices[0].x=-tam;vertices[0].y=0;vertices[0].z=tam;
@@ -1061,8 +1036,19 @@ void _patas::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, 
 //************************************************************************
 
 _r2d2::_r2d2() {
+  int c=100;
   restetGiro();
-}
+
+  piezas=4;
+  color_pick[0]=1.0;
+  color_pick[1]=0.0;
+  color_pick[2]=0.0; 
+  for (int i=0;i<piezas;i++) {
+    activo[i]=0;
+    color_selec[0][i]=color_selec[1][i]=color_selec[2][i]=c;
+    c=c+20;
+  }
+};
 
 void _r2d2::restetGiro(){
   giro_cabeza=2.0;
@@ -1081,13 +1067,23 @@ void _r2d2::restetGiro(){
 
 void _r2d2::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float r3, float g3, float b3, float grosor)
 {
+  float r_p,g_p,b_p;
+
+  r_p=color_pick[0];
+  g_p=color_pick[1];
+  b_p=color_pick[2];
+
   glPushMatrix();
     glTranslatef(0,1,0);
     glRotatef(giro_cuerpo, 1,0,0);
 
     glPushMatrix();
     glRotatef(giro_cabeza,0,1,0);
-    cabeza.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+    if(activo[0]==1)  
+      cabeza.draw(modo, r1-0.2, g1-0.2, b1-0.2, r2-0.2, g2-0.2, b2-0.2, grosor);
+    else
+      //cabeza.draw(modo, r_p, g_p, b_p, r_p, g_p, b_p, grosor);
+      cabeza.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
     glPopMatrix();
 
     glPushMatrix();
@@ -1104,22 +1100,80 @@ void _r2d2::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, f
     cuerpo.giro_tool = giro_tool;
     cuerpo.giro_cyl=giro_cyl;
     glTranslatef(0,-1,0);
-    cuerpo.draw(modo, r1, g1, b1, r2, g2, b2, r3, g3, b3, grosor);
+    if(activo[1]==1)
+      cuerpo.draw(modo, r1-0.2, g1-0.2, b1-0.2, r2-0.2, g2-0.2, b2-0.2, r3-0.2, g3-0.2, b3-0.2, grosor);
+    else
+      cuerpo.draw(modo, r1, g1, b1, r2, g2, b2, r3, g3, b3, grosor);
     glPopMatrix();
   glPopMatrix();
 
 
   glPushMatrix();
   glTranslatef(0,0.07,0);
-  patas.draw(modo, r1, g1, b1, r2, g2, b2, r3, g3, b3, grosor);
+  if(activo[2]==1)
+      patas.draw(modo, r1-0.2, g1-0.2, b1-0.2, r2-0.2, g2-0.2, b2-0.2, r3-0.2, g3-0.2, b3-0.2, grosor);
+  else
+      patas.draw(modo, r1, g1, b1, r2, g2, b2, r3, g3, b3, grosor);
   glPopMatrix();
 
   glPushMatrix();
   glTranslatef(0,-0.2,0);
   glScalef(0.4,0.2,0.4);
   glTranslatef(0,-0.05,-giro_cuerpo/20);
-  pie.draw(modo, r1, g1, b1, r1-0.1, g1-0.1, b1-0.1, grosor);
+  if(activo[3]==1)
+      pie.draw(modo, r1-0.2, g1-0.2, b1-0.2, r1-0.3, g1-0.3, b1-0.3, grosor);
+  else
+      pie.draw(modo, r1, g1, b1, r1-0.1, g1-0.1, b1-0.1, grosor);
   glPopMatrix(); 
  
   
+}
+
+void _r2d2::seleccion()
+{
+int c;
+glPushMatrix();
+    glTranslatef(0,1,0);
+    glRotatef(giro_cuerpo, 1,0,0);
+
+    c=color_selec[0][0];
+    glPushMatrix();
+    glRotatef(giro_cabeza,0,1,0);
+    cabeza.draw(SELECT, c, c, c, c, c, c, 1);
+    glPopMatrix();
+
+    c=color_selec[0][1];
+    glPushMatrix();
+    cuerpo.giro_tapa=giro_tapaC;
+    if(giro_tapaC!=-120){
+      giro_toolMax=0;
+    } else
+      giro_toolMax=70;
+
+    if(giro_tool>0){
+      giro_tapaMax = giro_tapaMin;
+    } else 
+      giro_tapaMax = -35;
+    cuerpo.giro_tool = giro_tool;
+    cuerpo.giro_cyl=giro_cyl;
+    glTranslatef(0,-1,0);
+    cuerpo.draw(SELECT, c, c, c, c, c, c, c, c, c, 1);
+    glPopMatrix();
+  glPopMatrix();
+
+  c=color_selec[0][2];
+  glPushMatrix();
+  glTranslatef(0,0.07,0);
+  patas.draw(SELECT, c, c, c, c, c, c, c, c, c, 1);
+  glPopMatrix();
+
+
+  c=color_selec[0][3];
+  glPushMatrix();
+  glTranslatef(0,-0.2,0);
+  glScalef(0.4,0.2,0.4);
+  glTranslatef(0,-0.05,-giro_cuerpo/20);
+  pie.draw(SELECT, c, c, c, c, c, c, 1);
+  glPopMatrix(); 
+
 }

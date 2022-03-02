@@ -10,7 +10,7 @@
 
 const float AXIS_SIZE=5000;
 typedef enum{POINTS,EDGES,SOLID_CHESS,SOLID,SOLID_ILLUMINATED_FLAT,
-             SOLID_ILLUMINATED_GOURAUD} _modo;
+             SOLID_ILLUMINATED_GOURAUD,SELECT} _modo;
  //Modos de sintesis con imágenes
 
 //*************************************************************************
@@ -40,6 +40,7 @@ void    draw_solido(float r, float g, float b);
 void 	draw_solido_ajedrez(float r1, float g1, float b1, float r2, float g2, float b2);
 void 	draw_iluminacion_plana( );
 void 	draw_iluminacion_suave( );
+void    draw_seleccion(int r, int g, int b);
 void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
 
 void	calcular_normales_caras();
@@ -223,11 +224,18 @@ public:
 	_r2d2();
 	void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float r3, float g3, float b3, float grosor);
 	void restetGiro();
+	void seleccion();
+
 
 	float giro_cabeza, giro_cyl;
 	float giro_cuerpo, giro_tapaC, giro_tapaMax, giro_tapaMin;
 	float giro_cuerpo_min, giro_cuerpo_max;
 	float giro_tool, giro_toolMax, giro_toolMin;
+
+	float  color_pick[3];
+	int    color_selec[3][4];
+	int    activo[4];
+	int    piezas;
 
 
 protected:
